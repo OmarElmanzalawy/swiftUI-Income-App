@@ -12,21 +12,50 @@ struct ContentView: View {
     @State private var transactions: [TransactionModel] = [
         TransactionModel(title: "Apples", date: Date(), type: TransactionType.expense, amount: 5.00)]
     
+    @State private var showAddTransactionView = false
+    @State private var transactionToEdit: TransactionModel?
+    
+    var expenses: String {
+        let sumExpenses = transactions.filter({ $0.type == .expense }).reduce(0, { $0 + $1.amount})
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .currency
+        return numberFormatter.string(from: sumExpenses as NSNumber) ?? "0"
+    }
+    
+    var income: String {
+        let sumIncome = transactions.filter({ $0.type == .income }).reduce(0, { $0 + $1.amount})
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .currency
+        return numberFormatter.string(from: sumIncome as NSNumber) ?? "0"
+    }
+    
+    var total: String {
+        let sumExpenses = transactions.filter({ $0.type == .expense }).reduce(0, { $0 + $1.amount})
+        let sumIncome = transactions.filter({ $0.type == .income }).reduce(0, { $0 + $1.amount})
+        let total = sumIncome - sumExpenses
+       
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .currency
+        return numberFormatter.string(from: total as NSNumber) ?? "0"
+    }
+    
+    
+    
     fileprivate func BalanceView() -> some View{
         ZStack{
             RoundedRectangle(cornerRadius: 8)
                 .fill(.primaryLightGreen)
             VStack(alignment: .leading,spacing: 5){
                 HStack{
-                    VStack{
+                    VStack(alignment: .leading){
                         Text("BALANCE")
                             .font(.caption)
                             .foregroundStyle(.white)
-                        Text("$2")
+                        Text(total)
                             .font(.system(size: 42,weight: .light))
                             .foregroundStyle(.white)
                     }
-                   
+                    
                     Spacer()
                 }
                 .padding(.top)
@@ -36,7 +65,7 @@ struct ContentView: View {
                         Text("Expense")
                             .font(.system(size: 15,weight: .semibold))
                             .foregroundStyle(.white)
-                        Text("$22")
+                        Text(expenses)
                             .font(.system(size: 15))
                             .foregroundStyle(.white)
                         
@@ -46,7 +75,7 @@ struct ContentView: View {
                         Text("Income")
                             .font(.system(size: 15,weight: .semibold))
                             .foregroundStyle(.white)
-                        Text("$22")
+                        Text(income)
                             .font(.system(size: 15))
                             .foregroundStyle(.white)
                     }
@@ -64,7 +93,7 @@ struct ContentView: View {
         VStack {
             Spacer()
             NavigationLink {
-                AddTransactionView()
+                AddTransactionView(transactions: $transactions)
             } label: {
                 Text("+")
                     .font(.largeTitle)
@@ -76,8 +105,6 @@ struct ContentView: View {
             .clipShape(Circle())
             
         }
-        
-        
     }
     
     
@@ -87,25 +114,43 @@ struct ContentView: View {
                 VStack {
                     BalanceView()
                     List(transactions){transaction in
-                        TransactionView(transaction: transaction)
+                        ForEach(transactions){transaction in
+                            Button(action: {
+    //                            showAddTransactionView = true
+                                transactionToEdit = transaction
+                            },label:{
+                                TransactionView(transaction: transaction)
+                                    .foregroundStyle(.black)
+                            })
+                        }
+                        .onDelete(perform: deleteItem)
                     }
                     .scrollContentBackground(.hidden)
                 }
+                
                 FloatingButton()
-                    .navigationTitle("Income")
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                
-                            } label: {
-                                Image(systemName: "gearshape.fill")
-                                    .foregroundStyle(.primaryLightGreen)
-                            }
-
-                        }
+                    
+            }
+            .navigationTitle("Income")
+            .navigationDestination(item: $transactionToEdit, destination: { transaction in
+                AddTransactionView(transactions: $transactions,transactionToEdit: transactionToEdit)
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundStyle(.primaryLightGreen)
                     }
+
+                }
             }
         }
+    }
+    
+    private func deleteItem(at offsets: IndexSet){
+        transactions.remove(atOffsets: offsets)
     }
 }
 
