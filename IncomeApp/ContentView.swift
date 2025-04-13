@@ -14,11 +14,25 @@ struct ContentView: View {
     
     @State private var showAddTransactionView = false
     @State private var transactionToEdit: TransactionModel?
+    @State private var showSettingsSheet: Bool = false
+    
+    @AppStorage("orderdescending") var orderDescending = false
+    @AppStorage("currency") var currency: Currency = .usd
+    @AppStorage("filterMinimum") private var filterMinimum: Double = 0.0
+    
+    var displayTransactions: [TransactionModel]{
+        let sortedTransactions: [TransactionModel] = orderDescending ? transactions.sorted(by: {$0.date < $1.date}) : transactions.sorted(by: {$0.date > $1.date})
+        let filteredTransactions = sortedTransactions.filter({$0.amount >= filterMinimum})
+        
+        return filteredTransactions
+    }
+    
     
     var expenses: String {
         let sumExpenses = transactions.filter({ $0.type == .expense }).reduce(0, { $0 + $1.amount})
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
+        numberFormatter.locale = currency.locale
         return numberFormatter.string(from: sumExpenses as NSNumber) ?? "0"
     }
     
@@ -26,6 +40,7 @@ struct ContentView: View {
         let sumIncome = transactions.filter({ $0.type == .income }).reduce(0, { $0 + $1.amount})
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
+        numberFormatter.locale = currency.locale
         return numberFormatter.string(from: sumIncome as NSNumber) ?? "0"
     }
     
@@ -36,6 +51,7 @@ struct ContentView: View {
        
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
+        numberFormatter.locale = currency.locale
         return numberFormatter.string(from: total as NSNumber) ?? "0"
     }
     
@@ -113,8 +129,8 @@ struct ContentView: View {
             ZStack {
                 VStack {
                     BalanceView()
-                    List(transactions){transaction in
-                        ForEach(transactions){transaction in
+                    List(displayTransactions){transaction in
+                        ForEach(displayTransactions){transaction in
                             Button(action: {
     //                            showAddTransactionView = true
                                 transactionToEdit = transaction
@@ -135,10 +151,13 @@ struct ContentView: View {
             .navigationDestination(item: $transactionToEdit, destination: { transaction in
                 AddTransactionView(transactions: $transactions,transactionToEdit: transactionToEdit)
             })
+            .sheet(isPresented: $showSettingsSheet, content: {
+                SettingsView()
+            })
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        
+                        showSettingsSheet = true
                     } label: {
                         Image(systemName: "gearshape.fill")
                             .foregroundStyle(.primaryLightGreen)

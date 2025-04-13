@@ -21,9 +21,12 @@ struct AddTransactionView: View {
     @State private var alertMessage = ""
     @Environment(\.dismiss) var dismiss
     
+    @AppStorage("currency") var currency: Currency = .usd
+    
     var numberFormatter: NumberFormatter{
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
+        numberFormatter.locale = currency.locale
         return numberFormatter
     }
     

@@ -16,6 +16,7 @@
 		047689142D8B1B2200325A47 /* TransactionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047689132D8B1B2200325A47 /* TransactionModel.swift */; };
 		047689162D8B1B5D00325A47 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047689152D8B1B5D00325A47 /* Enums.swift */; };
 		047689182D8B213D00325A47 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 047689172D8B213D00325A47 /* Colors.xcassets */; };
+		04F4A96F2DABA4FC001AE4AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		047689132D8B1B2200325A47 /* TransactionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionModel.swift; sourceTree = "<group>"; };
 		047689152D8B1B5D00325A47 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		047689172D8B213D00325A47 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				0450F9412DA2F36900D44926 /* TransactionView.swift */,
+				04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */,
 				0450F9432DA3018B00D44926 /* AddTransactionView.swift */,
 			);
 			path = Views;
@@ -169,6 +172,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04F4A96F2DABA4FC001AE4AB /* SettingsView.swift in Sources */,
 				047689142D8B1B2200325A47 /* TransactionModel.swift in Sources */,
 				047689072D8B1B0100325A47 /* ContentView.swift in Sources */,
 				0450F9422DA2F36900D44926 /* TransactionView.swift in Sources */,
