@@ -11,15 +11,16 @@ struct AddTransactionView: View {
     
     
     
-    @Binding var transactions: [TransactionModel]
-    var transactionToEdit: TransactionModel?
+//    @Binding var transactions: [TransactionItem]
+    var transactionToEdit: TransactionItem?
     @State private var amount = 0.0
     @State private var selectedTransactinType: TransactionType = .expense
     @State private var title = ""
     @State private var showAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.managedObjectContext) private var viewContext
     
     @AppStorage("currency") var currency: Currency = .usd
     
@@ -63,18 +64,31 @@ struct AddTransactionView: View {
                     showAlert = true
                     return
                 }
-                let transaction = TransactionModel(title: title, date: Date.now, type: selectedTransactinType, amount: amount)
+
                 if let transactionToEdit = transactionToEdit{
-                    guard let index = transactions.firstIndex(of: transactionToEdit) else{
-                        alertTitle = "Update Failed"
-                        alertMessage = "Something went wrong while updating transaction"
+                    transactionToEdit.title = title
+                    transactionToEdit.amount = amount
+                    transactionToEdit.type = Int16(selectedTransactinType.rawValue)
+                    
+                    do{
+                        try viewContext.save()
+                    } catch{
+                        alertTitle = "Something went wrong"
+                        alertMessage = "Cannot update this transaction right now"
                         showAlert = true
                         return
                     }
-                    transactions[index] = transaction
                 }
                 else{
-                    transactions.append(transaction)
+                    
+                    let transaction = TransactionItem(context: viewContext)
+                    transaction.amount = amount
+                    transaction.title = title
+                    transaction.date = Date.now
+                    transaction.type = Int16(selectedTransactinType.rawValue)
+                    transaction.id = UUID()
+                    
+                    try? viewContext.save()
                 }
                 
                 
@@ -98,8 +112,8 @@ struct AddTransactionView: View {
         .onAppear(perform: {
             if let transactionToEdit = transactionToEdit {
                 amount = transactionToEdit.amount
-                title = transactionToEdit.title
-                selectedTransactinType = transactionToEdit.type
+                title = transactionToEdit.wrappedTitle
+                selectedTransactinType = transactionToEdit.wrappedType
             }
         })
         .padding(.top)
@@ -118,5 +132,5 @@ struct AddTransactionView: View {
 }
 
 #Preview {
-    AddTransactionView(transactions: .constant([]))
+    AddTransactionView()
 }

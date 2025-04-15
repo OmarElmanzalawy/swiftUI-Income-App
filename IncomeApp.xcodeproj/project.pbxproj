@@ -17,6 +17,10 @@
 		047689162D8B1B5D00325A47 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047689152D8B1B5D00325A47 /* Enums.swift */; };
 		047689182D8B213D00325A47 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 047689172D8B213D00325A47 /* Colors.xcassets */; };
 		04F4A96F2DABA4FC001AE4AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */; };
+		04F4A9732DABC883001AE4AB /* IncomeData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A9712DABC883001AE4AB /* IncomeData.xcdatamodeld */; };
+		04F4A9762DABCD2A001AE4AB /* TransactionItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A9742DABCD2A001AE4AB /* TransactionItem+CoreDataClass.swift */; };
+		04F4A9772DABCD2A001AE4AB /* TransactionItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A9752DABCD2A001AE4AB /* TransactionItem+CoreDataProperties.swift */; };
+		04F4A9792DABD156001AE4AB /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A9782DABD156001AE4AB /* DataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +35,10 @@
 		047689152D8B1B5D00325A47 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		047689172D8B213D00325A47 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		04F4A9722DABC883001AE4AB /* IncomeData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IncomeData.xcdatamodel; sourceTree = "<group>"; };
+		04F4A9742DABCD2A001AE4AB /* TransactionItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		04F4A9752DABCD2A001AE4AB /* TransactionItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		04F4A9782DABD156001AE4AB /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +81,7 @@
 		047689032D8B1B0100325A47 /* IncomeApp */ = {
 			isa = PBXGroup;
 			children = (
+				04F4A9702DABC82E001AE4AB /* Data */,
 				0450F9402DA2F34F00D44926 /* Views */,
 				047689122D8B1B0E00325A47 /* Models */,
 				047689042D8B1B0100325A47 /* IncomeAppApp.swift */,
@@ -99,6 +108,17 @@
 				047689152D8B1B5D00325A47 /* Enums.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		04F4A9702DABC82E001AE4AB /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				04F4A9742DABCD2A001AE4AB /* TransactionItem+CoreDataClass.swift */,
+				04F4A9752DABCD2A001AE4AB /* TransactionItem+CoreDataProperties.swift */,
+				04F4A9712DABC883001AE4AB /* IncomeData.xcdatamodeld */,
+				04F4A9782DABD156001AE4AB /* DataManager.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,8 +196,12 @@
 				047689142D8B1B2200325A47 /* TransactionModel.swift in Sources */,
 				047689072D8B1B0100325A47 /* ContentView.swift in Sources */,
 				0450F9422DA2F36900D44926 /* TransactionView.swift in Sources */,
+				04F4A9732DABC883001AE4AB /* IncomeData.xcdatamodeld in Sources */,
 				0450F9442DA3018B00D44926 /* AddTransactionView.swift in Sources */,
 				047689162D8B1B5D00325A47 /* Enums.swift in Sources */,
+				04F4A9762DABCD2A001AE4AB /* TransactionItem+CoreDataClass.swift in Sources */,
+				04F4A9792DABD156001AE4AB /* DataManager.swift in Sources */,
+				04F4A9772DABCD2A001AE4AB /* TransactionItem+CoreDataProperties.swift in Sources */,
 				047689052D8B1B0100325A47 /* IncomeAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,6 +408,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		04F4A9712DABC883001AE4AB /* IncomeData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				04F4A9722DABC883001AE4AB /* IncomeData.xcdatamodel */,
+			);
+			currentVersion = 04F4A9722DABC883001AE4AB /* IncomeData.xcdatamodel */;
+			path = IncomeData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 047688F92D8B1B0100325A47 /* Project object */;
 }

@@ -45,5 +45,7 @@ struct TransactionView: View {
 }
 
 #Preview {
-    TransactionView(transaction: TransactionModel(title: "Apple", date: Date.now, type: TransactionType.expense, amount: 5))
+
+    
+    TransactionView(transaction: TransactionModel( id: UUID(),title: "Salary", date: Date.now, type: .expense, amount: 5000))
 }
