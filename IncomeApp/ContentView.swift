@@ -9,25 +9,27 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.managedObjectContext) var context
     
     @State private var showAddTransactionView = false
     @State private var transactionToEdit: TransactionItem?
     @State private var showSettingsSheet: Bool = false
     
+    
+    
+    @AppStorage("orderDescending") var orderDescending = false
+    @AppStorage("currency") var currency: Currency = .usd
+    @AppStorage("filterMinimum") private var filterMinimum: Double = 0.0
+    
     @FetchRequest(sortDescriptors: [
         SortDescriptor(\.date, order: .reverse)
     ]) var transactionsCoreData: FetchedResults<TransactionItem>
     
-    @AppStorage("orderdescending") var orderDescending = false
-    @AppStorage("currency") var currency: Currency = .usd
-    @AppStorage("filterMinimum") private var filterMinimum: Double = 0.0
-    
     var displayTransactions: [TransactionModel] {
         let transactions = transactionsCoreData.map { TransactionModel.fromCoreData($0) }
         let sortedTransactions = orderDescending ?
-            transactions.sorted(by: {$0.date < $1.date}) :
-            transactions.sorted(by: {$0.date > $1.date})
+            transactions.sorted(by: {$0.date > $1.date}) :
+            transactions.sorted(by: {$0.date < $1.date})
         return sortedTransactions.filter({$0.amount >= filterMinimum})
     }
     
@@ -137,15 +139,19 @@ struct ContentView: View {
             ZStack {
                 VStack {
                     BalanceView()
-                    List(displayTransactions) { transaction in
-                        Button(action: {
-                            // Find corresponding CoreData object
-                            transactionToEdit = transactionsCoreData.first { $0.wrappedId == transaction.id }
-                        }, label: {
-                            TransactionView(transaction: transaction)
-                                .foregroundStyle(.black)
-                        })
+                    List{
+                        ForEach(displayTransactions){ transaction in
+                            Button(action: {
+                                // Find corresponding CoreData object
+                                transactionToEdit = transactionsCoreData.first { $0.wrappedId == transaction.id }
+                            }, label: {
+                                TransactionView(transaction: transaction)
+                                    .foregroundStyle(.black)
+                            })
+                        }
+                        .onDelete(perform: deleteItem)
                     }
+                    
                     .scrollContentBackground(.hidden)
                 }
                 
@@ -172,16 +178,16 @@ struct ContentView: View {
     }
     
     private func deleteItem(at offsets: IndexSet) {
-        for offset in offsets {
+        for offset in offsets  {
             let transaction = transactionsCoreData[offset]
-            moc.delete(transaction)
+            context.delete(transaction)
         }
-        try? moc.save()
+        try? context.save()
     }
     
     private func saveContext() {
         do {
-            try moc.save()
+            try context.save()
         } catch {
             print("Error saving context: \(error)")
         }
@@ -189,6 +195,7 @@ struct ContentView: View {
 }
 
 #Preview {
+    
     ContentView()
-        .environment(\.managedObjectContext, DataManager.shared.container.viewContext)
+        
 }
