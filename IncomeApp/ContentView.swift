@@ -6,22 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     
-    @State private var transactions: [TransactionModel] = [
-        TransactionModel(title: "Apples", date: Date(), type: TransactionType.expense, amount: 5.00)]
+//    @State private var transactions: [TransactionModel] = [
+//        TransactionModel(title: "Apples", date: Date(), type: TransactionType.expense, amount: 5.00)]
+    
+    @Query var transactions: [TransactionData]
     
     @State private var showAddTransactionView = false
-    @State private var transactionToEdit: TransactionModel?
+    @State private var transactionToEdit: TransactionData?
     @State private var showSettingsSheet: Bool = false
     
     @AppStorage("orderdescending") var orderDescending = false
     @AppStorage("currency") var currency: Currency = .usd
     @AppStorage("filterMinimum") private var filterMinimum: Double = 0.0
     
-    var displayTransactions: [TransactionModel]{
-        let sortedTransactions: [TransactionModel] = orderDescending ? transactions.sorted(by: {$0.date < $1.date}) : transactions.sorted(by: {$0.date > $1.date})
+    @Environment(\.modelContext) private var context
+    
+    var displayTransactions: [TransactionData]{
+        let sortedTransactions: [TransactionData] = orderDescending ? transactions.sorted(by: {$0.date < $1.date}) : transactions.sorted(by: {$0.date > $1.date})
         let filteredTransactions = sortedTransactions.filter({$0.amount >= filterMinimum})
         
         return filteredTransactions
@@ -109,7 +114,7 @@ struct ContentView: View {
         VStack {
             Spacer()
             NavigationLink {
-                AddTransactionView(transactions: $transactions)
+                AddTransactionView()
             } label: {
                 Text("+")
                     .font(.largeTitle)
@@ -132,7 +137,6 @@ struct ContentView: View {
                     List(displayTransactions){transaction in
                         ForEach(displayTransactions){transaction in
                             Button(action: {
-    //                            showAddTransactionView = true
                                 transactionToEdit = transaction
                             },label:{
                                 TransactionView(transaction: transaction)
@@ -149,7 +153,7 @@ struct ContentView: View {
             }
             .navigationTitle("Income")
             .navigationDestination(item: $transactionToEdit, destination: { transaction in
-                AddTransactionView(transactions: $transactions,transactionToEdit: transactionToEdit)
+                AddTransactionView(transactionToEdit: transactionToEdit)
             })
             .sheet(isPresented: $showSettingsSheet, content: {
                 SettingsView()
@@ -169,7 +173,13 @@ struct ContentView: View {
     }
     
     private func deleteItem(at offsets: IndexSet){
-        transactions.remove(atOffsets: offsets)
+//        transactions.remove(atOffsets: offsets)
+        for index in offsets{
+            let transactionToDelete = transactions[index]
+            context.delete(transactionToDelete)
+            try? context.save()
+        }
+        
     }
 }
 

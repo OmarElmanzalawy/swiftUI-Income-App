@@ -6,6 +6,36 @@
 //
 
 import Foundation
+import SwiftData
+
+@Model class TransactionData{
+    var id : UUID
+    var title: String
+    var date: Date
+    var type: TransactionType
+    var amount: Double
+    
+    init(id: UUID, title: String, date: Date, type: TransactionType, amount: Double) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.type = type
+        self.amount = amount
+    }
+    
+    var displayDate: String{
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    func displayAmount(currency: Currency) -> String{
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = currency.locale
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: amount as NSNumber) ?? "$0.00"
+    }
+}
 
 struct TransactionModel: Identifiable,Hashable{
     let id = UUID()
@@ -19,13 +49,7 @@ struct TransactionModel: Identifiable,Hashable{
         formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
-//    var displayAmount: String{
-//        let formatter = NumberFormatter()
-//        formatter.numberStyle = .currency
-//        formatter.maximumFractionDigits = 2
-//        return formatter.string(from: amount as NSNumber) ?? "$0.00"
-//    }
-//    
+    
     func displayAmount(currency: Currency) -> String{
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency

@@ -9,10 +9,7 @@ import SwiftUI
 
 struct AddTransactionView: View {
     
-    
-    
-    @Binding var transactions: [TransactionModel]
-    var transactionToEdit: TransactionModel?
+    var transactionToEdit: TransactionData?
     @State private var amount = 0.0
     @State private var selectedTransactinType: TransactionType = .expense
     @State private var title = ""
@@ -20,6 +17,7 @@ struct AddTransactionView: View {
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var context
     
     @AppStorage("currency") var currency: Currency = .usd
     
@@ -63,18 +61,19 @@ struct AddTransactionView: View {
                     showAlert = true
                     return
                 }
-                let transaction = TransactionModel(title: title, date: Date.now, type: selectedTransactinType, amount: amount)
+//                let transaction = TransactionModel(title: title, date: Date.now, type: selectedTransactinType, amount: amount)
+                let transaction = TransactionData(id: UUID(), title: title, date: Date.now, type: selectedTransactinType, amount: amount)
                 if let transactionToEdit = transactionToEdit{
-                    guard let index = transactions.firstIndex(of: transactionToEdit) else{
-                        alertTitle = "Update Failed"
-                        alertMessage = "Something went wrong while updating transaction"
-                        showAlert = true
-                        return
-                    }
-                    transactions[index] = transaction
+//                    transactions[index] = transaction
+                    transactionToEdit.title = title
+                    transactionToEdit.type = selectedTransactinType
+                    transactionToEdit.amount = amount
+                    
+                    
                 }
                 else{
-                    transactions.append(transaction)
+                    context.insert(transaction)
+//                    transactions.append(transaction)
                 }
                 
                 
@@ -118,5 +117,5 @@ struct AddTransactionView: View {
 }
 
 #Preview {
-    AddTransactionView(transactions: .constant([]))
+    AddTransactionView()
 }
