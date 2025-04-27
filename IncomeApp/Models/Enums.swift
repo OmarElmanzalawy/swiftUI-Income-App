@@ -7,7 +7,9 @@
 
 import Foundation
 
+
 enum TransactionType: String, CaseIterable, Identifiable, Codable{
+
     case income,expense
     var id: Self {self}
     
@@ -40,7 +42,7 @@ enum Currency: Int,CaseIterable{
         case .usd:
             return Locale(identifier: "en_US")
         case .egyptian:
-            return Locale(identifier: "EGP")
+            return Locale(identifier: "egp")
         case .euros:
             return Locale(identifier: "en_GB")
         }
