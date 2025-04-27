@@ -124,7 +124,6 @@ struct ContentView: View {
             }
             .background(.primaryLightGreen)
             .clipShape(Circle())
-            
         }
     }
     
@@ -134,7 +133,7 @@ struct ContentView: View {
             ZStack {
                 VStack {
                     BalanceView()
-                    List(displayTransactions){transaction in
+                    List{
                         ForEach(displayTransactions){transaction in
                             Button(action: {
                                 transactionToEdit = transaction
@@ -151,6 +150,9 @@ struct ContentView: View {
                 FloatingButton()
                     
             }
+            .onAppear(perform: {
+                print(transactions)
+            })
             .navigationTitle("Income")
             .navigationDestination(item: $transactionToEdit, destination: { transaction in
                 AddTransactionView(transactionToEdit: transactionToEdit)

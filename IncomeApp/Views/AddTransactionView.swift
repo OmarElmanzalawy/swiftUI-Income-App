@@ -62,7 +62,7 @@ struct AddTransactionView: View {
                     return
                 }
 //                let transaction = TransactionModel(title: title, date: Date.now, type: selectedTransactinType, amount: amount)
-                let transaction = TransactionData(id: UUID(), title: title, date: Date.now, type: selectedTransactinType, amount: amount)
+                
                 if let transactionToEdit = transactionToEdit{
 //                    transactions[index] = transaction
                     transactionToEdit.title = title
@@ -72,6 +72,7 @@ struct AddTransactionView: View {
                     
                 }
                 else{
+                    let transaction = TransactionData(id: UUID(), title: title, date: Date.now, type: selectedTransactinType, amount: amount)
                     context.insert(transaction)
 //                    transactions.append(transaction)
                 }
