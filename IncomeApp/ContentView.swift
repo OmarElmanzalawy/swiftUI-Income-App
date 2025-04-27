@@ -6,37 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     
-    @Environment(\.managedObjectContext) var context
+//    @State private var transactions: [TransactionModel] = [
+//        TransactionModel(title: "Apples", date: Date(), type: TransactionType.expense, amount: 5.00)]
+    
+    @Query var transactions: [TransactionData]
     
     @State private var showAddTransactionView = false
-    @State private var transactionToEdit: TransactionItem?
+    @State private var transactionToEdit: TransactionData?
     @State private var showSettingsSheet: Bool = false
     
-    
-    
-    @AppStorage("orderDescending") var orderDescending = false
+    @AppStorage("orderdescending") var orderDescending = false
     @AppStorage("currency") var currency: Currency = .usd
     @AppStorage("filterMinimum") private var filterMinimum: Double = 0.0
     
-    @FetchRequest(sortDescriptors: [
-        SortDescriptor(\.date, order: .reverse)
-    ]) var transactionsCoreData: FetchedResults<TransactionItem>
+    @Environment(\.modelContext) private var context
     
-    var displayTransactions: [TransactionModel] {
-        let transactions = transactionsCoreData.map { TransactionModel.fromCoreData($0) }
-        let sortedTransactions = orderDescending ?
-            transactions.sorted(by: {$0.date > $1.date}) :
-            transactions.sorted(by: {$0.date < $1.date})
-        return sortedTransactions.filter({$0.amount >= filterMinimum})
+    var displayTransactions: [TransactionData]{
+        let sortedTransactions: [TransactionData] = orderDescending ? transactions.sorted(by: {$0.date < $1.date}) : transactions.sorted(by: {$0.date > $1.date})
+        let filteredTransactions = sortedTransactions.filter({$0.amount >= filterMinimum})
+        
+        return filteredTransactions
     }
     
+    
     var expenses: String {
-        let sumExpenses = displayTransactions
-            .filter { $0.type == .expense }
-            .reduce(0) { $0 + $1.amount }
+        let sumExpenses = transactions.filter({ $0.type == .expense }).reduce(0, { $0 + $1.amount})
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
         numberFormatter.locale = currency.locale
@@ -44,9 +42,7 @@ struct ContentView: View {
     }
     
     var income: String {
-        let sumIncome = displayTransactions
-            .filter { $0.type == .income }
-            .reduce(0) { $0 + $1.amount }
+        let sumIncome = transactions.filter({ $0.type == .income }).reduce(0, { $0 + $1.amount})
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
         numberFormatter.locale = currency.locale
@@ -54,19 +50,17 @@ struct ContentView: View {
     }
     
     var total: String {
-        let sumExpenses = displayTransactions
-            .filter { $0.type == .expense }
-            .reduce(0) { $0 + $1.amount }
-        let sumIncome = displayTransactions
-            .filter { $0.type == .income }
-            .reduce(0) { $0 + $1.amount }
+        let sumExpenses = transactions.filter({ $0.type == .expense }).reduce(0, { $0 + $1.amount})
+        let sumIncome = transactions.filter({ $0.type == .income }).reduce(0, { $0 + $1.amount})
         let total = sumIncome - sumExpenses
-        
+       
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .currency
         numberFormatter.locale = currency.locale
         return numberFormatter.string(from: total as NSNumber) ?? "0"
     }
+    
+    
     
     fileprivate func BalanceView() -> some View{
         ZStack{
@@ -97,7 +91,7 @@ struct ContentView: View {
                             .foregroundStyle(.white)
                         
                     }
-                    //                    .frame(width: 200)
+//                    .frame(width: 200)
                     VStack(alignment: .leading){
                         Text("Income")
                             .font(.system(size: 15,weight: .semibold))
@@ -126,13 +120,13 @@ struct ContentView: View {
                     .font(.largeTitle)
                     .frame(width: 70,height: 70)
                     .foregroundStyle(.white)
-                //                    .background()
+//                    .background()
             }
             .background(.primaryLightGreen)
             .clipShape(Circle())
-            
         }
     }
+    
     
     var body: some View {
         NavigationStack {
@@ -140,30 +134,32 @@ struct ContentView: View {
                 VStack {
                     BalanceView()
                     List{
-                        ForEach(displayTransactions){ transaction in
+                        ForEach(displayTransactions){transaction in
                             Button(action: {
-                                // Find corresponding CoreData object
-                                transactionToEdit = transactionsCoreData.first { $0.wrappedId == transaction.id }
-                            }, label: {
+                                transactionToEdit = transaction
+                            },label:{
                                 TransactionView(transaction: transaction)
                                     .foregroundStyle(.black)
                             })
                         }
                         .onDelete(perform: deleteItem)
                     }
-                    
                     .scrollContentBackground(.hidden)
                 }
                 
                 FloatingButton()
+                    
             }
+            .onAppear(perform: {
+                print(transactions)
+            })
             .navigationTitle("Income")
-            .navigationDestination(item: $transactionToEdit) { transaction in
-                AddTransactionView(transactionToEdit: transaction)
-            }
-            .sheet(isPresented: $showSettingsSheet) {
+            .navigationDestination(item: $transactionToEdit, destination: { transaction in
+                AddTransactionView(transactionToEdit: transactionToEdit)
+            })
+            .sheet(isPresented: $showSettingsSheet, content: {
                 SettingsView()
-            }
+            })
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -172,30 +168,25 @@ struct ContentView: View {
                         Image(systemName: "gearshape.fill")
                             .foregroundStyle(.primaryLightGreen)
                     }
+
                 }
             }
         }
     }
     
-    private func deleteItem(at offsets: IndexSet) {
-        for offset in offsets  {
-            let transaction = transactionsCoreData[offset]
-            context.delete(transaction)
+    private func deleteItem(at offsets: IndexSet){
+//        transactions.remove(atOffsets: offsets)
+        for index in offsets{
+            let transactionToDelete = transactions[index]
+            context.delete(transactionToDelete)
+            try? context.save()
         }
-        try? context.save()
-    }
-    
-    private func saveContext() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving context: \(error)")
-        }
+        
     }
 }
 
 #Preview {
-    
+    let previewContent = PreviewHelper.previewContainer
     ContentView()
-        
+        .modelContainer(previewContent)
 }

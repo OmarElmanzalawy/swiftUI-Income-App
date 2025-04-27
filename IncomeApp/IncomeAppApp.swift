@@ -6,16 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct IncomeAppApp: App {
-    
-    let dataManager = DataManager.shared
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, dataManager.container.viewContext)
+                .modelContainer(for: [TransactionData.self])
         }
     }
 }

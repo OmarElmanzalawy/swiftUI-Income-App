@@ -6,36 +6,58 @@
 //
 
 import Foundation
+import SwiftData
 
-struct TransactionModel: Identifiable, Hashable {
-    let id: UUID
-    let title: String
-    let date: Date
-    let type: TransactionType
-    let amount: Double
+@Model class TransactionData{
+    var id : UUID = UUID()
+    var title: String = ""
+    var date: Date = Date.now
+    var type: TransactionType = TransactionType.expense
+    var amount: Double = 0
     
-    var displayDate: String {
+    init(id: UUID, title: String, date: Date, type: TransactionType, amount: Double) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.type = type
+        self.amount = amount
+    }
+    
+    @Transient
+    var displayDate: String{
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
     
-    func displayAmount(currency: Currency) -> String {
+    @Transient
+    func displayAmount(currency: Currency) -> String{
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = currency.locale
         formatter.maximumFractionDigits = 2
         return formatter.string(from: amount as NSNumber) ?? "$0.00"
     }
-    
-    // ADD: Helper function to convert from CoreData model
-    static func fromCoreData(_ item: TransactionItem) -> TransactionModel {
-        return TransactionModel(
-            id: item.wrappedId,
-            title: item.wrappedTitle,
-            date: item.wrappedDate,
-            type: item.wrappedType,
-            amount: item.wrappedAmount
-        )
-    }
 }
+
+//struct TransactionModel: Identifiable,Hashable{
+//    let id = UUID()
+//    let title: String
+//    let date: Date
+//    let type: TransactionType
+//    let amount: Double
+//    
+//    var displayDate: String{
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .medium
+//        return formatter.string(from: date)
+//    }
+//    
+//    func displayAmount(currency: Currency) -> String{
+//        let formatter = NumberFormatter()
+//        formatter.numberStyle = .currency
+//        formatter.locale = currency.locale
+//        formatter.maximumFractionDigits = 2
+//        return formatter.string(from: amount as NSNumber) ?? "$0.00"
+//    }
+//}

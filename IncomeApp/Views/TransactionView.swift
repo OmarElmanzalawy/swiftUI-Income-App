@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TransactionView: View {
-    let transaction: TransactionModel
+    let transaction: TransactionData
     @AppStorage("currency") var currency: Currency = .usd
     var body: some View {
         VStack {
@@ -45,7 +45,5 @@ struct TransactionView: View {
 }
 
 #Preview {
-
-    
-    TransactionView(transaction: TransactionModel( id: UUID(),title: "Salary", date: Date.now, type: .expense, amount: 5000))
+    TransactionView(transaction: TransactionData(id: UUID(),title: "Apple", date: Date.now, type: TransactionType.expense, amount: 5))
 }
