@@ -186,5 +186,7 @@ struct ContentView: View {
 }
 
 #Preview {
+    let previewContent = PreviewHelper.previewContainer
     ContentView()
+        .modelContainer(previewContent)
 }

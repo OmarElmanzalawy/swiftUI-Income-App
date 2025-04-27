@@ -16,6 +16,7 @@
 		047689142D8B1B2200325A47 /* TransactionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047689132D8B1B2200325A47 /* TransactionModel.swift */; };
 		047689162D8B1B5D00325A47 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047689152D8B1B5D00325A47 /* Enums.swift */; };
 		047689182D8B213D00325A47 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 047689172D8B213D00325A47 /* Colors.xcassets */; };
+		047C683D2DBE600C00423782 /* PreviewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047C683C2DBE600C00423782 /* PreviewHelper.swift */; };
 		04F4A96F2DABA4FC001AE4AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		047689132D8B1B2200325A47 /* TransactionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionModel.swift; sourceTree = "<group>"; };
 		047689152D8B1B5D00325A47 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		047689172D8B213D00325A47 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		047C683C2DBE600C00423782 /* PreviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelper.swift; sourceTree = "<group>"; };
 		04F4A96E2DABA4FC001AE4AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +75,7 @@
 		047689032D8B1B0100325A47 /* IncomeApp */ = {
 			isa = PBXGroup;
 			children = (
+				047C683B2DBE5FF700423782 /* Helpers */,
 				0450F9402DA2F34F00D44926 /* Views */,
 				047689122D8B1B0E00325A47 /* Models */,
 				047689042D8B1B0100325A47 /* IncomeAppApp.swift */,
@@ -99,6 +102,14 @@
 				047689152D8B1B5D00325A47 /* Enums.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		047C683B2DBE5FF700423782 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				047C683C2DBE600C00423782 /* PreviewHelper.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,6 +183,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				047C683D2DBE600C00423782 /* PreviewHelper.swift in Sources */,
 				04F4A96F2DABA4FC001AE4AB /* SettingsView.swift in Sources */,
 				047689142D8B1B2200325A47 /* TransactionModel.swift in Sources */,
 				047689072D8B1B0100325A47 /* ContentView.swift in Sources */,
